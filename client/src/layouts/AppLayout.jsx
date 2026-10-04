@@ -1,8 +1,18 @@
-import { Link, Outlet } from 'react-router-dom';
+import { Link, Outlet, useNavigate } from 'react-router-dom';
 import { useTheme } from '../context/ThemeContext';
+import { useAuth } from '../context/AuthContext';
 
 export default function AppLayout() {
   const { theme, toggleTheme } = useTheme();
+  const { user, logout } = useAuth();
+  const navigate = useNavigate();
+
+  async function handleLogout() {
+    await logout();
+    navigate('/');
+  }
+
+  const linkClass = 'rounded-md px-3 py-1.5 text-sm hover:bg-slate-100 dark:hover:bg-slate-800';
 
   return (
     <div className="min-h-screen">
@@ -11,13 +21,36 @@ export default function AppLayout() {
           <Link to="/" className="text-lg font-semibold tracking-tight">
             OpenSource<span className="text-emerald-500">Companion</span>
           </Link>
-          <button
-            onClick={toggleTheme}
-            aria-label={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}
-            className="rounded-md border border-slate-300 px-3 py-1.5 text-sm hover:bg-slate-100 dark:border-slate-700 dark:hover:bg-slate-800"
-          >
-            {theme === 'dark' ? '☀️ Light' : '🌙 Dark'}
-          </button>
+
+          <div className="flex items-center gap-1">
+            {user ? (
+              <>
+                <Link to="/dashboard" className={linkClass}>
+                  Dashboard
+                </Link>
+                <span className="hidden px-2 text-sm text-slate-500 sm:inline">@{user.username}</span>
+                <button onClick={handleLogout} className={linkClass}>
+                  Log out
+                </button>
+              </>
+            ) : (
+              <>
+                <Link to="/login" className={linkClass}>
+                  Log in
+                </Link>
+                <Link to="/register" className="rounded-md bg-emerald-600 px-3 py-1.5 text-sm font-medium text-white hover:bg-emerald-500">
+                  Sign up
+                </Link>
+              </>
+            )}
+            <button
+              onClick={toggleTheme}
+              aria-label={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}
+              className="ml-2 rounded-md border border-slate-300 px-3 py-1.5 text-sm hover:bg-slate-100 dark:border-slate-700 dark:hover:bg-slate-800"
+            >
+              {theme === 'dark' ? '☀️' : '🌙'}
+            </button>
+          </div>
         </nav>
       </header>
       <main className="mx-auto max-w-6xl px-4 py-10">

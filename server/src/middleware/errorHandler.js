@@ -8,7 +8,6 @@ export function notFound(req, res, next) {
 // Express recognises an error handler by its 4 parameters, so `next` must stay.
 // eslint-disable-next-line no-unused-vars
 export function errorHandler(err, req, res, next) {
-  // Malformed JSON body
   if (err.type === 'entity.parse.failed') {
     err = new ApiError(400, 'Invalid JSON in request body');
   }
@@ -20,7 +19,7 @@ export function errorHandler(err, req, res, next) {
 
   res.status(statusCode).json({
     success: false,
-    // Never leak internal error details to clients in production
     message: isServerError && env.NODE_ENV === 'production' ? 'Internal server error' : err.message,
+    ...(err.errors && { errors: err.errors }),
   });
 }
