@@ -25,6 +25,9 @@ export default function AppLayout() {
           <div className="flex items-center gap-1">
             {user ? (
               <>
+                <Link to="/issues" className={linkClass}>Issues</Link>
+                <Link to="/bookmarks" className={linkClass}>Bookmarks</Link>
+                <Link to="/my-contributions" className={linkClass}>My contributions</Link>
                 <Link to="/dashboard" className={linkClass}>
                   Dashboard
                 </Link>

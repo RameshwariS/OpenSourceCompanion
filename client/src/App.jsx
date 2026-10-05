@@ -7,6 +7,8 @@ import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 import DashboardPage from './pages/DashboardPage';
 import NotFoundPage from './pages/NotFoundPage';
+import IssuesPage from './pages/IssuesPage';
+
 
 export default function App() {
   return (
@@ -26,6 +28,7 @@ export default function App() {
         {/* Later: <Route element={<ProtectedRoute roles={['admin']} />}> for /admin */}
 
         <Route path="*" element={<NotFoundPage />} />
+        <Route path="issues" element={<IssuesPage />} />
       </Route>
     </Routes>
   );

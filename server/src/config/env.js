@@ -22,6 +22,7 @@ const envSchema = z.object({
   GITHUB_CLIENT_ID: optional,
   GITHUB_CLIENT_SECRET: optional,
   GITHUB_CALLBACK_URL: optional,
+  GITHUB_TOKEN: optional,
 });
 
 const parsed = envSchema.safeParse(process.env);
