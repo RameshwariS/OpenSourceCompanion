@@ -6,9 +6,11 @@ import HomePage from './pages/HomePage';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 import DashboardPage from './pages/DashboardPage';
-import NotFoundPage from './pages/NotFoundPage';
 import IssuesPage from './pages/IssuesPage';
-
+import IssueDetailPage from './pages/IssueDetailPage';
+import BookmarksPage from './pages/BookmarksPage';
+import MyContributionsPage from './pages/MyContributionsPage';
+import NotFoundPage from './pages/NotFoundPage';
 
 export default function App() {
   return (
@@ -23,12 +25,13 @@ export default function App() {
 
         <Route element={<ProtectedRoute />}>
           <Route path="dashboard" element={<DashboardPage />} />
+          <Route path="issues" element={<IssuesPage />} />
+          <Route path="issues/:owner/:repo/:number" element={<IssueDetailPage />} />
+          <Route path="bookmarks" element={<BookmarksPage />} />
+          <Route path="my-contributions" element={<MyContributionsPage />} />
         </Route>
 
-        {/* Later: <Route element={<ProtectedRoute roles={['admin']} />}> for /admin */}
-
         <Route path="*" element={<NotFoundPage />} />
-        <Route path="issues" element={<IssuesPage />} />
       </Route>
     </Routes>
   );

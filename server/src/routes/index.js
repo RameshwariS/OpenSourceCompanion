@@ -3,7 +3,8 @@ import healthRoutes from './health.routes.js';
 import authRoutes from './auth.routes.js';
 import usersRoutes from './users.routes.js';
 import issuesRoutes from './issues.routes.js';
-
+import bookmarksRoutes from './bookmarks.routes.js';
+import contributionsRoutes from './contributions.routes.js';
 
 const router = Router();
 
@@ -11,6 +12,7 @@ router.use('/health', healthRoutes);
 router.use('/auth', authRoutes);
 router.use('/users', usersRoutes);
 router.use('/issues', issuesRoutes);
-// Later phases: /issues, /bookmarks, /contributions, ...
+router.use('/bookmarks', bookmarksRoutes);
+router.use('/contributions', contributionsRoutes);
 
 export default router;

@@ -1,13 +1,17 @@
 import mongoose from 'mongoose';
 import { MongoMemoryServer } from 'mongodb-memory-server';
 import User from '../../src/models/User.js';
+import Issue from '../../src/models/Issue.js';
+import Bookmark from '../../src/models/Bookmark.js';
+import Contribution from '../../src/models/Contribution.js';
 
 let mongod;
 
 export async function connectTestDB() {
   mongod = await MongoMemoryServer.create();
   await mongoose.connect(mongod.getUri());
-  await User.init(); // wait for unique indexes, since duplicate tests depend on them
+  // Wait for unique indexes: the duplicate tests depend on them
+  await Promise.all([User, Issue, Bookmark, Contribution].map((m) => m.init()));
 }
 
 export async function clearTestDB() {

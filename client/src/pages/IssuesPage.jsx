@@ -6,6 +6,8 @@ import IssueFilters from '../components/IssueFilters';
 import Pagination from '../components/Pagination';
 import EmptyState from '../components/EmptyState';
 import { IssueCardSkeleton } from '../components/Skeleton';
+import BookmarkButton from '../components/BookmarkButton';
+import { STATUS_LABEL } from '../constants/contribution';
 
 // First visit with no filters: start from beginner-friendly issues.
 // A deliberate "clear filters" navigates with state.explicit so we don't redirect again.
@@ -75,7 +77,20 @@ function IssuesView() {
             ) : (
               <div className={`space-y-3 ${isPlaceholderData ? 'opacity-60' : ''}`}>
                 {data.items.map((issue) => (
-                  <IssueCard key={issue.githubId} issue={issue} />
+                  <IssueCard
+                    key={issue.githubId}
+                    issue={issue}
+                    actions={
+                      <>
+                        <BookmarkButton issue={issue} />
+                        {issue.contribution && (
+                          <span className="rounded-full bg-sky-100 px-2 py-0.5 text-xs text-sky-800 dark:bg-sky-950 dark:text-sky-300">
+                            Tracking: {STATUS_LABEL[issue.contribution.status]}
+                          </span>
+                        )}
+                      </>
+                    }
+                  />
                 ))}
               </div>
             )}
