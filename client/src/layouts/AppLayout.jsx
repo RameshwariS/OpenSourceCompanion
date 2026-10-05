@@ -28,10 +28,12 @@ export default function AppLayout() {
                 <Link to="/issues" className={linkClass}>Issues</Link>
                 <Link to="/bookmarks" className={linkClass}>Bookmarks</Link>
                 <Link to="/my-contributions" className={linkClass}>My contributions</Link>
+                <Link to="/pull-requests" className={linkClass}>Pull requests</Link>
                 <Link to="/dashboard" className={linkClass}>
                   Dashboard
                 </Link>
-                <span className="hidden px-2 text-sm text-slate-500 sm:inline">@{user.username}</span>
+<Link to={`/users/${user.username}`} className={`${linkClass} hidden sm:inline`}>@{user.username}</Link>
+<Link to="/settings" className={linkClass}>Settings</Link>
                 <button onClick={handleLogout} className={linkClass}>
                   Log out
                 </button>

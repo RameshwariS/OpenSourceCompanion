@@ -21,5 +21,6 @@ export function errorHandler(err, req, res, next) {
     success: false,
     message: isServerError && env.NODE_ENV === 'production' ? 'Internal server error' : err.message,
     ...(err.errors && { errors: err.errors }),
+    ...(err instanceof ApiError && err.code && { code: err.code }),
   });
 }

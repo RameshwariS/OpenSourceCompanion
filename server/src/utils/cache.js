@@ -61,3 +61,7 @@ export function cached(key, ttlSeconds, loader) {
   inflight.set(key, promise);
   return promise;
 }
+
+export function forget(key) {
+  store.delete(key);
+}

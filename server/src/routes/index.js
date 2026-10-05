@@ -5,6 +5,7 @@ import usersRoutes from './users.routes.js';
 import issuesRoutes from './issues.routes.js';
 import bookmarksRoutes from './bookmarks.routes.js';
 import contributionsRoutes from './contributions.routes.js';
+import pullRequestsRoutes from './pullRequests.routes.js';
 
 const router = Router();
 
@@ -14,5 +15,6 @@ router.use('/users', usersRoutes);
 router.use('/issues', issuesRoutes);
 router.use('/bookmarks', bookmarksRoutes);
 router.use('/contributions', contributionsRoutes);
+router.use('/pull-requests', pullRequestsRoutes);
 
 export default router;

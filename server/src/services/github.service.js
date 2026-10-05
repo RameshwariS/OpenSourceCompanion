@@ -4,7 +4,7 @@ import { ApiError } from '../utils/ApiError.js';
 import { cached } from '../utils/cache.js';
 
 // Cache lifetimes (seconds). Search changes fast; repo stats barely move.
-const TTL = { search: 600, repo: 3600, issue: 600, comments: 300 };
+const TTL = { search: 600, repo: 3600, issue: 600, comments: 300, reviews: 900, events: 3600 };
 
 const seg = encodeURIComponent; // owner/repo are validated, but encode anyway
 
@@ -33,13 +33,28 @@ function mapGithubError(err) {
   return new ApiError(502, 'GitHub request failed');
 }
 
-async function githubGet(url, params) {
+export async function githubGet(url, params) {
   try {
     const res = await githubClient.get(url, { params });
     return res.data;
   } catch (err) {
     throw mapGithubError(err);
   }
+}
+
+export function getPullReviews(owner, repo, number) {
+  return cached(`gh:reviews:v1:${owner}/${repo}#${number}`.toLowerCase(), TTL.reviews, () =>
+    githubGet(`/repos/${seg(owner)}/${seg(repo)}/pulls/${number}/reviews`, { per_page: 100 }),
+  );
+}
+
+export function getUserEvents(login) {
+  return cached(`gh:events:v1:${login.toLowerCase()}`, TTL.events, async () => {
+    const pages = await Promise.all(
+      [1, 2, 3].map((page) => githubGet(`/users/${seg(login)}/events/public`, { per_page: 100, page })),
+    );
+    return pages.flat();
+  });
 }
 
 const hash = (value) => crypto.createHash('sha1').update(JSON.stringify(value)).digest('hex');
@@ -72,3 +87,4 @@ export function getIssueComments(owner, repo, number) {
     githubGet(`/repos/${seg(owner)}/${seg(repo)}/issues/${number}/comments`, { per_page: 10 }),
   );
 }
+
