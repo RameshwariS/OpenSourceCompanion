@@ -14,6 +14,9 @@ import NotFoundPage from './pages/NotFoundPage';
 import ProfilePage from './pages/ProfilePage';
 import SettingsPage from './pages/SettingsPage';
 import PullRequestsPage from './pages/PullRequestsPage';
+import ProjectsPage from './pages/ProjectsPage';
+import ProjectDetailPage from './pages/ProjectDetailPage';
+import NewProjectPage from './pages/NewProjectPage';
 
 export default function App() {
   return (
@@ -23,7 +26,6 @@ export default function App() {
 
         <Route element={<GuestRoute />}>
           <Route path="login" element={<LoginPage />} />
-          <Route path="issues" element={<IssuesPage />} />
           <Route path="register" element={<RegisterPage />} />
         </Route>
 
@@ -31,14 +33,20 @@ export default function App() {
           <Route path="dashboard" element={<DashboardPage />} />
           <Route path="issues/:owner/:repo/:number" element={<IssueDetailPage />} />
           <Route path="bookmarks" element={<BookmarksPage />} />
+          <Route path="issues" element={<IssuesPage />} />
           <Route path="my-contributions" element={<MyContributionsPage />} />
           <Route path="users/:username" element={<ProfilePage />} />
-<Route path="settings" element={<SettingsPage />} />
-<Route path="pull-requests" element={<PullRequestsPage />} />
-        </Route>
+          <Route path="settings" element={<SettingsPage />} />
+          <Route path="pull-requests" element={<PullRequestsPage />} />
+          <Route path="projects" element={<ProjectsPage />} />
+          <Route path="projects/:id" element={<ProjectDetailPage />} />
+          <Route element={<ProtectedRoute roles={['maintainer', 'admin']} />}>
+            <Route path="projects/new" element={<NewProjectPage />} />
+            </Route>
+          </Route>
 
-        <Route path="*" element={<NotFoundPage />} />
-      </Route>
+          <Route path="*" element={<NotFoundPage />} />
+        </Route>
     </Routes>
   );
 }

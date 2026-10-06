@@ -4,6 +4,8 @@ import User from '../../src/models/User.js';
 import Issue from '../../src/models/Issue.js';
 import Bookmark from '../../src/models/Bookmark.js';
 import Contribution from '../../src/models/Contribution.js';
+import Project from '../../src/models/Project.js';
+import ProjectFollow from '../../src/models/ProjectFollow.js';
 
 let mongod;
 
@@ -11,7 +13,7 @@ export async function connectTestDB() {
   mongod = await MongoMemoryServer.create();
   await mongoose.connect(mongod.getUri());
   // Wait for unique indexes: the duplicate tests depend on them
-  await Promise.all([User, Issue, Bookmark, Contribution].map((m) => m.init()));
+  await Promise.all([User, Issue, Bookmark, Contribution, Project, ProjectFollow].map((m) => m.init()));
 }
 
 export async function clearTestDB() {

@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-const isHttpUrl = (value) => {
+export const isHttpUrl = (value) => {
   try {
     return ['http:', 'https:'].includes(new URL(value).protocol);
   } catch {
@@ -15,7 +15,7 @@ const isLinkedIn = (value) => {
 };
 
 // These URLs end up in <a href>. Allowing only http(s) blocks `javascript:` links (XSS).
-const optionalUrl = (check, message) =>
+export const optionalUrl = (check, message) =>
   z
     .string()
     .trim()

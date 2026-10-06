@@ -4,8 +4,7 @@ import { ApiError } from '../utils/ApiError.js';
 import { cached } from '../utils/cache.js';
 
 // Cache lifetimes (seconds). Search changes fast; repo stats barely move.
-const TTL = { search: 600, repo: 3600, issue: 600, comments: 300, reviews: 900, events: 3600 };
-
+const TTL = { search: 600, repo: 3600, issue: 600, comments: 300, reviews: 900, events: 3600, activity: 600, languages: 3600 };
 const seg = encodeURIComponent; // owner/repo are validated, but encode anyway
 
 function mapGithubError(err) {
@@ -66,14 +65,34 @@ export function searchIssues({ q, sort, page, perPage }) {
   );
 }
 
+// Keep only what we use. Cached objects stay small.
+const slimRepo = (r) => ({
+  fullName: r.full_name,
+  name: r.name,
+  description: r.description ?? '',
+  language: r.language ?? null,
+  topics: r.topics ?? [],
+  stars: r.stargazers_count ?? 0,
+  forks: r.forks_count ?? 0,
+  archived: Boolean(r.archived),
+  license: r.license?.spdx_id ?? null,
+  ownerId: r.owner?.id ?? null,
+  ownerLogin: r.owner?.login ?? null,
+  ownerType: r.owner?.type ?? null,
+  ownerAvatarUrl: r.owner?.avatar_url ?? null,
+});
+
+export function getRepository(owner, repo) {
+  return cached(`gh:repo:v1:${owner}/${repo}`.toLowerCase(), TTL.repo, async () =>
+    slimRepo(await githubGet(`/repos/${seg(owner)}/${seg(repo)}`)),
+  );
+}
+
 /** Issue search results don't include stars/language, so we look the repo up (cached 1h). */
 export async function getRepoInfo(repoFullName) {
   const [owner, repo] = repoFullName.split('/');
-  const { data } = await cached(`gh:repo:v1:${repoFullName.toLowerCase()}`, TTL.repo, async () => {
-    const r = await githubGet(`/repos/${seg(owner)}/${seg(repo)}`);
-    return { stars: r.stargazers_count, language: r.language };
-  });
-  return data;
+  const { data } = await getRepository(owner, repo);
+  return { stars: data.stars, language: data.language };
 }
 
 export function getIssue(owner, repo, number) {
@@ -86,5 +105,58 @@ export function getIssueComments(owner, repo, number) {
   return cached(`gh:comments:v1:${owner}/${repo}#${number}`.toLowerCase(), TTL.comments, () =>
     githubGet(`/repos/${seg(owner)}/${seg(repo)}/issues/${number}/comments`, { per_page: 10 }),
   );
+}
+
+// Like githubGet, but returns the whole response so callers can read headers.
+async function githubGetFull(url, params) {
+  try {
+    return await githubClient.get(url, { params });
+  } catch (err) {
+    throw mapGithubError(err);
+  }
+}
+
+/** '<...&page=2>; rel="next", <...&page=87>; rel="last"' -> 87 */
+export function parseLastPage(linkHeader) {
+  const match = /<[^>]*[?&]page=(\d+)[^>]*>;\s*rel="last"/.exec(linkHeader ?? '');
+  return match ? Number(match[1]) : null;
+}
+
+/**
+ * GitHub has no "count contributors" endpoint. We ask for ONE contributor per page,
+ * so the number of the last page equals the number of contributors.
+ */
+export function getContributorCount(owner, repo) {
+  return cached(`gh:contributors:v1:${owner}/${repo}`.toLowerCase(), TTL.repo, async () => {
+    const res = await githubGetFull(`/repos/${seg(owner)}/${seg(repo)}/contributors`, { per_page: 1 });
+    const last = parseLastPage(res.headers?.link);
+    if (last) return last;
+    return Array.isArray(res.data) ? res.data.length : 0; // no Link header = 0 or 1 contributors
+  });
+}
+
+export function getRepoLanguages(owner, repo) {
+  return cached(`gh:languages:v1:${owner}/${repo}`.toLowerCase(), TTL.languages, () =>
+    githubGet(`/repos/${seg(owner)}/${seg(repo)}/languages`),
+  );
+}
+
+export function getRepoEvents(owner, repo) {
+  return cached(`gh:repoevents:v1:${owner}/${repo}`.toLowerCase(), TTL.activity, () =>
+    githubGet(`/repos/${seg(owner)}/${seg(repo)}/events`, { per_page: 50 }),
+  );
+}
+
+/** 204 = public member, 404 = not a (public) member. Short TTL so fixing your org settings works quickly. */
+export function isPublicOrgMember(org, login) {
+  return cached(`gh:orgmember:v1:${org}/${login}`.toLowerCase(), 300, async () => {
+    try {
+      await githubClient.get(`/orgs/${seg(org)}/public_members/${seg(login)}`);
+      return true;
+    } catch (err) {
+      if (err.response?.status === 404) return false;
+      throw mapGithubError(err);
+    }
+  }).then((r) => r.data);
 }
 

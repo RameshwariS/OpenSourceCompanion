@@ -1,0 +1,1 @@
+export const LANGUAGES = ['JavaScript', 'TypeScript', 'Python', 'Java', 'Go', 'Rust', 'C++', 'C#', 'C', 'PHP', 'Ruby', 'Kotlin', 'Swift', 'Dart', 'Shell'];

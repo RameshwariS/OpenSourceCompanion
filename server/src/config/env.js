@@ -1,5 +1,9 @@
-import 'dotenv/config';
+import dotenv from 'dotenv';
+import { dirname, resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { z } from 'zod';
+
+dotenv.config({ path: resolve(dirname(fileURLToPath(import.meta.url)), '../../.env') });
 
 // An empty value in .env (e.g. GITHUB_CLIENT_ID=) is treated as "not set"
 const optional = z
