@@ -6,6 +6,8 @@ import { languageBreakdown, mapEvents, repoToFields, toProjectDTO } from '../uti
 import * as github from './github.service.js';
 import * as issueService from './issue.service.js';
 import { attachUserState } from './issueState.service.js';
+import Opportunity from '../models/Opportunity.js';
+import { isProjectManager as isManager } from '../utils/permissions.js';
 
 export const PER_PAGE = 12;
 const MAX_PROJECTS_PER_USER = 20;
@@ -19,9 +21,6 @@ const SORTS = {
   beginner: { beginnerIssueCount: -1, stars: -1, _id: -1 },
 };
 
-// Works whether `owner` is an ObjectId or a populated object
-const isManager = (user, project) =>
-  user.role === 'admin' || String(project.owner._id ?? project.owner) === String(user._id);
 
 const definedOnly = (obj) => Object.fromEntries(Object.entries(obj).filter(([, v]) => v !== undefined));
 const totalOf = (settled) => (settled.status === 'fulfilled' ? settled.value.pagination.totalCount : undefined);
@@ -208,7 +207,7 @@ export async function deleteProject(user, id) {
   const project = await loadManageable(user, id);
   await Project.deleteOne({ _id: project._id });
   await ProjectFollow.deleteMany({ project: project._id });
-  // Phase 7: also delete this project's opportunities here.
+  await Opportunity.deleteMany({ project: project._id });
 }
 
 export async function followProject(userId, projectId) {
