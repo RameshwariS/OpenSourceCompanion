@@ -7,9 +7,6 @@ import bookmarksRoutes from './bookmarks.routes.js';
 import contributionsRoutes from './contributions.routes.js';
 import pullRequestsRoutes from './pullRequests.routes.js';
 import projectsRoutes from './projects.routes.js';
-import opportunitiesRoutes from './opportunities.routes.js';
-import applicationsRoutes from './applications.routes.js';
-import maintainerRoutes from './maintainer.routes.js';
 
 const router = Router();
 
@@ -21,8 +18,5 @@ router.use('/bookmarks', bookmarksRoutes);
 router.use('/contributions', contributionsRoutes);
 router.use('/pull-requests', pullRequestsRoutes);
 router.use('/projects', projectsRoutes);
-router.use('/opportunities', opportunitiesRoutes);
-router.use('/applications', applicationsRoutes);
-router.use('/maintainer', maintainerRoutes);
 
 export default router;

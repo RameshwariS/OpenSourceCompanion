@@ -6,7 +6,6 @@ import { languageBreakdown, mapEvents, repoToFields, toProjectDTO } from '../uti
 import * as github from './github.service.js';
 import * as issueService from './issue.service.js';
 import { attachUserState } from './issueState.service.js';
-import Opportunity from '../models/Opportunity.js';
 import { isProjectManager as isManager } from '../utils/permissions.js';
 
 export const PER_PAGE = 12;
@@ -207,7 +206,6 @@ export async function deleteProject(user, id) {
   const project = await loadManageable(user, id);
   await Project.deleteOne({ _id: project._id });
   await ProjectFollow.deleteMany({ project: project._id });
-  await Opportunity.deleteMany({ project: project._id });
 }
 
 export async function followProject(userId, projectId) {

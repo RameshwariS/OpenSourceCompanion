@@ -42,11 +42,11 @@ export default function App() {
           <Route path="projects/:id" element={<ProjectDetailPage />} />
           <Route element={<ProtectedRoute roles={['maintainer', 'admin']} />}>
             <Route path="projects/new" element={<NewProjectPage />} />
-            </Route>
           </Route>
-
-          <Route path="*" element={<NotFoundPage />} />
         </Route>
+
+        <Route path="*" element={<NotFoundPage />} />
+      </Route>
     </Routes>
   );
 }
