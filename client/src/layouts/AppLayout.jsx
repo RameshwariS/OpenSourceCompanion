@@ -1,6 +1,7 @@
 import { Link, Outlet, useNavigate } from 'react-router-dom';
 import { useTheme } from '../context/ThemeContext';
 import { useAuth } from '../context/AuthContext';
+import NotificationBell from '../components/NotificationBell';
 
 export default function AppLayout() {
   const { theme, toggleTheme } = useTheme();
@@ -30,9 +31,8 @@ export default function AppLayout() {
                 <Link to="/bookmarks" className={linkClass}>Bookmarks</Link>
                 <Link to="/my-contributions" className={linkClass}>My contributions</Link>
                 <Link to="/pull-requests" className={linkClass}>Pull requests</Link>
-                <Link to="/dashboard" className={linkClass}>
-                  Dashboard
-                </Link>
+                <Link to="/dashboard" className={linkClass}>Dashboard</Link>
+                <Link to="/organizations" className={linkClass}>Organizations</Link>
                 <Link to={`/users/${user.username}`} className={`${linkClass} hidden sm:inline`}>@{user.username}</Link>
                 <Link to="/settings" className={linkClass}>Settings</Link>
                 <button onClick={handleLogout} className={linkClass}>
@@ -48,7 +48,7 @@ export default function AppLayout() {
                   Sign up
                 </Link>
               </>
-            )}
+            )} {user && <NotificationBell />}
             <button
               onClick={toggleTheme}
               aria-label={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}

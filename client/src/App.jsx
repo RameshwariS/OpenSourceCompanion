@@ -17,6 +17,7 @@ import PullRequestsPage from './pages/PullRequestsPage';
 import ProjectsPage from './pages/ProjectsPage';
 import ProjectDetailPage from './pages/ProjectDetailPage';
 import NewProjectPage from './pages/NewProjectPage';
+import OrganizationsPage from './pages/OrganizationsPage';
 
 export default function App() {
   return (
@@ -40,6 +41,7 @@ export default function App() {
           <Route path="pull-requests" element={<PullRequestsPage />} />
           <Route path="projects" element={<ProjectsPage />} />
           <Route path="projects/:id" element={<ProjectDetailPage />} />
+          <Route path="organizations" element={<OrganizationsPage />} />
           <Route element={<ProtectedRoute roles={['maintainer', 'admin']} />}>
             <Route path="projects/new" element={<NewProjectPage />} />
           </Route>

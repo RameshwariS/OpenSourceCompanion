@@ -7,6 +7,10 @@ export default defineConfig({
   server: {
     port: 5173,
     // In development, forward /api/* to the Express server
-    proxy: { '/api': 'http://localhost:5000' },
+        proxy: {
+      '/api': 'http://localhost:5000',
+      // Socket.io connects to the same origin, so the cookie flows. `ws` enables WebSockets.
+      '/socket.io': { target: 'http://localhost:5000', ws: true },
+    },
   },
 });
