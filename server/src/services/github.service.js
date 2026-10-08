@@ -160,3 +160,10 @@ export function isPublicOrgMember(org, login) {
   }).then((r) => r.data);
 }
 
+/** Organizations only: GitHub returns 404 for personal accounts on this endpoint. */
+export function getOrganization(org) {
+  return cached(`gh:org:v1:${org}`.toLowerCase(), TTL.repo, async () => {
+    const o = await githubGet(`/orgs/${seg(org)}`);
+    return { login: o.login, name: o.name ?? o.login, avatarUrl: o.avatar_url ?? null };
+  });
+}

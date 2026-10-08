@@ -6,6 +6,8 @@ import Bookmark from '../../src/models/Bookmark.js';
 import Contribution from '../../src/models/Contribution.js';
 import Project from '../../src/models/Project.js';
 import ProjectFollow from '../../src/models/ProjectFollow.js';
+import Notification from '../../src/models/Notification.js';
+import OrgFollow from '../../src/models/OrgFollow.js';
 
 let mongod;
 
@@ -14,7 +16,7 @@ export async function connectTestDB() {
   await mongoose.connect(mongod.getUri());
   // Wait for unique indexes: the duplicate tests depend on them
   await Promise.all(
-    [User, Issue, Bookmark, Contribution, Project, ProjectFollow].map((m) => m.init()),
+    [User, Issue, Bookmark, Contribution, Project, ProjectFollow, Notification, OrgFollow].map((m) => m.init()),
   );
 }
 
