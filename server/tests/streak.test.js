@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { activityDays, computeStreaks } from '../src/services/activity.service.js';
-
+import { activityCounts, activityDays, buildActivitySeries, computeStreaks } from '../src/services/activity.service.js';
 const now = new Date('2026-03-10T12:00:00Z');
 
 describe('computeStreaks', () => {
@@ -40,5 +40,35 @@ describe('activityDays', () => {
       'alice',
     );
     expect(days).toEqual(['2026-03-01']);
+  });
+});
+
+describe('activityCounts and buildActivitySeries', () => {
+  const ev = (type, repo, day) => ({ type, repo: { name: repo }, created_at: `${day}T10:00:00Z` });
+
+  it('counts events per day, skipping own repositories and pushes', () => {
+    const counts = activityCounts(
+      [
+        ev('PullRequestEvent', 'acme/widgets', '2026-03-01'),
+        ev('IssuesEvent', 'acme/other', '2026-03-01'),
+        ev('IssueCommentEvent', 'alice/own', '2026-03-01'),
+        ev('PushEvent', 'acme/widgets', '2026-03-02'),
+      ],
+      'alice',
+    );
+    expect(Object.fromEntries(counts)).toEqual({ '2026-03-01': 2 });
+  });
+
+  it('builds 91 consecutive days ending today with zeros filled in', () => {
+    const now = new Date('2026-03-10T12:00:00Z');
+    const { days, total } = buildActivitySeries(new Map([['2026-03-10', 3], ['2026-03-01', 2]]), now);
+
+    expect(days).toHaveLength(91);
+    expect(days.at(-1)).toEqual({ date: '2026-03-10', count: 3 });
+    expect(days.find((d) => d.date === '2026-03-02').count).toBe(0);
+    expect(total).toBe(5);
+    // consecutive days, no gaps
+    const gaps = days.slice(1).map((d, i) => Date.parse(d.date) - Date.parse(days[i].date));
+    expect(new Set(gaps)).toEqual(new Set([86_400_000]));
   });
 });

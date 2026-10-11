@@ -41,3 +41,6 @@ export const listIssuesSchema = z.object({
 export const getIssueSchema = z.object({
   params: z.object({ owner: githubName, repo: githubName, number: issueNumber }),
 });
+export const recommendedSchema = z.object({
+  query: z.object({ limit: z.coerce.number().int().min(1).max(30).default(10) }),
+});

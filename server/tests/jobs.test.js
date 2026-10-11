@@ -144,6 +144,17 @@ describe('checkOrgIssues', () => {
     expect(await Notification.countDocuments({ user: working.user.id })).toBe(1);
     expect(await Notification.countDocuments({ user: broken.user.id })).toBe(0);
   });
+    it('does not repeat the flood summary on the next run', async () => {
+    const { user } = await createAgent();
+    await follow(user.id);
+    mockOrgSearch(Array.from({ length: 8 }, (_, i) => orgIssue(i + 1, minutesAgo(10 - i))));
+
+    await checkOrgIssues();
+    await checkOrgIssues();
+
+    expect(await Notification.countDocuments({ type: 'org_issue_summary' })).toBe(1);
+    expect(await Notification.countDocuments({ type: 'org_issue' })).toBe(5);
+  });
 });
 
 describe('checkMergedPullRequests', () => {

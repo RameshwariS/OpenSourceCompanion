@@ -56,8 +56,7 @@ const checkpoint = complete ? now : new Date(result.items.at(-1).created_at);
         type: 'org_issue_summary',
         message: `${extra} more new ${extra === 1 ? 'issue' : 'issues'} in ${follow.org}`,
         link: `/issues?org=${encodeURIComponent(follow.org)}&sort=created`,
-        dedupeKey: `org-summary:${orgKey}:${checkpoint.toISOString()}`,
-      });
+        dedupeKey: `org-summary:${orgKey}:${fresh[MAX_INDIVIDUAL].id}`,      });
       if (created) sent++;
     }
 

@@ -18,6 +18,7 @@ import ProjectsPage from './pages/ProjectsPage';
 import ProjectDetailPage from './pages/ProjectDetailPage';
 import NewProjectPage from './pages/NewProjectPage';
 import OrganizationsPage from './pages/OrganizationsPage';
+import RecommendedPage from './pages/RecommendedPage';
 
 export default function App() {
   return (
@@ -42,6 +43,7 @@ export default function App() {
           <Route path="projects" element={<ProjectsPage />} />
           <Route path="projects/:id" element={<ProjectDetailPage />} />
           <Route path="organizations" element={<OrganizationsPage />} />
+          <Route path="recommended" element={<RecommendedPage />} />
           <Route element={<ProtectedRoute roles={['maintainer', 'admin']} />}>
             <Route path="projects/new" element={<NewProjectPage />} />
           </Route>
