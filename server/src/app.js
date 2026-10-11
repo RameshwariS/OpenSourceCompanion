@@ -8,7 +8,7 @@ import routes from './routes/index.js';
 import { notFound, errorHandler } from './middleware/errorHandler.js';
 
 const app = express();
-
+app.set('trust proxy', env.TRUST_PROXY); // so req.ip is the real visitor behind nginx
 app.use(helmet()); // secure HTTP headers
 app.use(cors({ origin: env.CLIENT_URL, credentials: true })); // only our frontend, cookies allowed
 app.use(express.json({ limit: '10kb' })); // reject huge bodies

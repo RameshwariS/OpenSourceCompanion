@@ -7,6 +7,7 @@ export default defineConfig({
       NODE_ENV: 'test',
       MONGODB_URI: 'mongodb://127.0.0.1:27017/opensourcecompanion_test',
       GITHUB_TOKEN: '',
+       REDIS_URL: '',
     },
   },
 });

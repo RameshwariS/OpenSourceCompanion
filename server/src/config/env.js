@@ -27,6 +27,13 @@ const envSchema = z.object({
   GITHUB_CLIENT_SECRET: optional,
   GITHUB_CALLBACK_URL: optional,
   GITHUB_TOKEN: optional,
+
+    REDIS_URL: optional,
+  TRUST_PROXY: z.coerce.number().int().min(0).default(0),
+  COOKIE_SECURE: z
+    .string()
+    .optional()
+    .transform((v) => (v === 'true' ? true : v === 'false' ? false : undefined)),
 });
 
 const parsed = envSchema.safeParse(process.env);
@@ -39,4 +46,5 @@ if (!parsed.success) {
   process.exit(1);
 }
 
-export const env = parsed.data;
+const data = parsed.data;
+export const env = { ...data, COOKIE_SECURE: data.COOKIE_SECURE ?? data.NODE_ENV === 'production' };

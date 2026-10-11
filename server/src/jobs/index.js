@@ -1,16 +1,19 @@
 import cron from 'node-cron';
+import { withLock } from '../utils/lock.js';
 import { checkMergedPullRequests } from './mergedPullRequests.job.js';
 import { checkOrgIssues } from './orgIssues.job.js';
 import { checkTrackedIssues } from './trackedIssues.job.js';
 
-// A slow run must never overlap the next one
+const LOCK_SECONDS = 10 * 60; // if an instance dies mid-job, others can take over after this
+
+// A slow run must never overlap the next one (in this process: `running`, across instances: the lock)
 function guarded(name, fn) {
   let running = false;
   return async () => {
     if (running) return;
     running = true;
     try {
-      await fn();
+      await withLock(`job:${name}`, LOCK_SECONDS, fn);
     } catch (err) {
       console.error(`Job "${name}" failed:`, err.message);
     } finally {
