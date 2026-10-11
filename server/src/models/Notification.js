@@ -22,6 +22,6 @@ notificationSchema.index({ user: 1, dedupeKey: 1 }, { unique: true });
 notificationSchema.index({ user: 1, createdAt: -1 });
 notificationSchema.index({ user: 1, readAt: 1 });
 // MongoDB deletes notifications 90 days after creation
-notificationSchema.index({ createdAt: 1 }, { expireAfterSeconds: 90 * 24 * 60 });
+notificationSchema.index({ createdAt: 1 }, { expireAfterSeconds: 90 * 24 * 60 *60 });
 
 export default mongoose.model('Notification', notificationSchema);

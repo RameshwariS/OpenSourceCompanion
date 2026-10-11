@@ -30,7 +30,7 @@ export async function followOrg(user, org) {
     const follow = await OrgFollow.create({
       user: user._id,
       org: profile.login,
-      orgKey: profile.login,
+      orgKey: profile.login.toLowerCase(),
       avatarUrl: profile.avatarUrl,
     });
     return { follow: toDTO(follow), created: true };

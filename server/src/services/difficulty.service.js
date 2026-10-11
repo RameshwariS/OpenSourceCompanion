@@ -6,7 +6,7 @@ export const DIFFICULTIES = ['beginner', 'intermediate', 'advanced'];
 
 // "good-first-issue", "Good First Issue" and "good first issue 🌱" all become "good first issue"
 const normalize = (label) => label.toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
-
+export const normalizeLabel = normalize;
 const BEGINNER = new Set(['good first issue', 'first timers only', 'beginner', 'beginner friendly', 'easy']);
 const INTERMEDIATE = new Set(['help wanted', 'medium', 'intermediate']);
 const COMPLEX = new Set(['hard', 'difficult', 'advanced', 'complex', 'expert']);

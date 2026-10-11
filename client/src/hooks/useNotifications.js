@@ -19,7 +19,7 @@ export function useMarkRead() {
   const toast = useToast();
   return useMutation({
     mutationFn: api.markRead,
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['notification'] }),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['notifications'] }),
     onError: (err) => toast.error(getErrorMessage(err)),
   });
 }

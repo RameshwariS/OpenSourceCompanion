@@ -18,8 +18,7 @@ export async function checkTrackedIssues() {
       const { dto } = await fetchIssueFromGithub(owner, repo, issue.number);
 
       if (dto.state === 'closed') {
-        const trackers = await Contribution.find({ issue: issue._id }).select('user');
-        for (const tracker of trackers) {
+          const trackers = await Contribution.find({ issue: issue._id, status: { $nin: FINISHED } }).select('user');        for (const tracker of trackers) {
           await notify(tracker.user, {
             type: 'issue_closed',
             message: `A tracked issue was closed: ${dto.title.slice(0, 120)} (${dto.repoFullName}#${dto.number})`,

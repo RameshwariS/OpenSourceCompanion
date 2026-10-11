@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import { parse } from 'cookie';
+import { parseSetCookie } from 'cookie';
 import { Server } from 'socket.io';
 import { env } from '../config/env.js';
 import User from '../models/User.js';
@@ -38,5 +38,5 @@ export function initSockets(httpServer) {
 }
 
 export function emitToUser(userId, event, payload) {
-  io?.to(`user-${userId}`).emit(event, payload);
+  io?.to(`user:${userId}`).emit(event, payload);
 }

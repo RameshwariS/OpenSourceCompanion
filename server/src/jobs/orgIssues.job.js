@@ -26,8 +26,8 @@ async function processOrg({ _id: orgKey, org, oldest }, now) {
 
   // If everything fit on one page we have seen it all up to `now`.
   // Otherwise we only got as far as the last issue returned, and the next run continues from there.
-  const complete = issues.length <= PAGE;
-  const checkpoint = complete ? now : new Date(result.items.at(-1).created_at);
+const complete = result.total_count <= PAGE;  
+const checkpoint = complete ? now : new Date(result.items.at(-1).created_at);
 
   const follows = await OrgFollow.find({ orgKey }).populate('user', 'status github.username');
   let sent = 0;
@@ -35,7 +35,7 @@ async function processOrg({ _id: orgKey, org, oldest }, now) {
   for (const follow of follows) {
     if (!follow.user || follow.user.status !== 'active') continue;
 
-    const since = Math.min(follow.createdAt.getTime(), follow.lastCheckedAt.getTime() - OVERLAP_MS);
+    const since = Math.max(follow.createdAt.getTime(), follow.lastCheckedAt.getTime() - OVERLAP_MS);
     const me = follow.user.github?.username?.toLowerCase();
     const fresh = issues.filter((i) => Date.parse(i.created_at) > since && i.user?.login?.toLowerCase() !== me);
 

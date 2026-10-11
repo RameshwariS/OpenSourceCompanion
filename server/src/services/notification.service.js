@@ -55,6 +55,8 @@ export async function markRead(userId, id) {
 }
 
 export async function markAllRead(userId) {
-  await Notification.updateMany({ readAt: null }, { $set: { readAt: new Date() } });
+  // await Notification.updateOne({_id : userId},{ readAt: null }, { $set: { readAt: new Date() } })
+  await Notification.updateMany({ user: userId, readAt: null }, { $set: { readAt: new Date() } });
+  // await Notification.updateMany({ readAt: null }, { $set: { readAt: new Date() } });
   return { unreadCount: 0 };
 }
