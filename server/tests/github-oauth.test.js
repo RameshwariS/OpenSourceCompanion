@@ -1,6 +1,11 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import request from 'supertest';
 import app from '../src/app.js';
+
+vi.mock('../src/services/githubAuth.service.js', async (importOriginal) => {
+  const actual = await importOriginal();
+  return { ...actual, isGithubConfigured: () => false };
+});
 
 // These cover the parts we can test without calling GitHub: the safety checks.
 describe('GitHub OAuth guards', () => {

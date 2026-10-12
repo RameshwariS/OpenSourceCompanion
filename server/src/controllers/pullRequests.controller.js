@@ -10,11 +10,6 @@ export async function stats(req, res) {
   res.status(200).json({ success: true, data, message: 'Pull request statistics' });
 }
 
-export function refresh(req, res) {
-  prService.refreshMyPullRequests(req.user);
-  res.status(200).json({ success: true, data: null, message: 'Cache cleared. Fresh data will load next.' });
-}
-
 export async function refresh(req, res) {
   await prService.refreshMyPullRequests(req.user);
   res.status(200).json({ success: true, data: null, message: 'Cache cleared. Fresh data will load next.' });
