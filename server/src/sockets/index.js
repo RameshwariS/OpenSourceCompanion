@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import { parseSetCookie } from 'cookie';
+import { parse } from 'cookie';
 import { Server } from 'socket.io';
 import { env } from '../config/env.js';
 import User from '../models/User.js';

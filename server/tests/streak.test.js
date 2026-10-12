@@ -1,5 +1,4 @@
 import { describe, it, expect } from 'vitest';
-import { activityDays, computeStreaks } from '../src/services/activity.service.js';
 import { activityCounts, activityDays, buildActivitySeries, computeStreaks } from '../src/services/activity.service.js';
 const now = new Date('2026-03-10T12:00:00Z');
 

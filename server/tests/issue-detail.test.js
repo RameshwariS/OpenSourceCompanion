@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeAll, afterAll, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, vi, beforeAll, afterAll, afterEach } from 'vitest';
 import request from 'supertest';
 import app from '../src/app.js';
 import { clearCache } from '../src/utils/cache.js';
