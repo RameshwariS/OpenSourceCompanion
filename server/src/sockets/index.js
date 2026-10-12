@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import { parse } from 'cookie';
+import { parseCookie } from 'cookie';
 import { Server } from 'socket.io';
 import { env } from '../config/env.js';
 import User from '../models/User.js';
@@ -13,7 +13,7 @@ export function initSockets(httpServer) {
   // Same rules as the REST API: a valid cookie and an active account, or no connection
   io.use(async (socket, next) => {
     try {
-      const token = parse(socket.handshake.headers.cookie ?? '')[AUTH_COOKIE];
+      const token = parseCookie(socket.handshake.headers.cookie ?? '')[AUTH_COOKIE];
       if (!token) return next(new Error('unauthorized'));
 
       const payload = verifyAuthToken(token);
