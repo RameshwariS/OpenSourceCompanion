@@ -28,7 +28,6 @@ const envSchema = z.object({
   GITHUB_CALLBACK_URL: optional,
   GITHUB_TOKEN: optional,
 
-    REDIS_URL: optional,
   TRUST_PROXY: z.coerce.number().int().min(0).default(0),
   COOKIE_SECURE: z
     .string()

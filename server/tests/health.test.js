@@ -11,7 +11,6 @@ describe('GET /api/health', () => {
     expect(res.body.data.status).toBe('ok');
     // No DB connection is opened in tests, so this is expected:
     expect(res.body.data.database).toBe('disconnected');
-        expect(res.body.data.cache).toBe('memory'); // no Redis in tests
   });
 });
 
