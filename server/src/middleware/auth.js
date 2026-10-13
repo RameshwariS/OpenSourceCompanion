@@ -29,6 +29,14 @@ export async function authenticate(req, res, next) {
   next();
 }
 
+// Like authenticate but never blocks guests — req.user is null when not logged in.
+export async function optionalAuthenticate(req, res, next) {
+  const user = await getUserFromRequest(req);
+  if (user?.status === 'suspended') throw new ApiError(403, 'Your account has been suspended');
+  req.user = user ?? null;
+  next();
+}
+
 // "Are you allowed?" -> 403 if the role isn't permitted. Always use after authenticate.
 export const authorize =
   (...roles) =>

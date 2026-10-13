@@ -1,8 +1,11 @@
 import { STATUSES } from '../constants/contribution';
 import { useRemoveContribution, useTrackIssue, useUpdateContribution } from '../hooks/useContributions';
+import { useAuth } from '../context/AuthContext';
 
 // `issue` needs: repoFullName, number, contribution ({ id, status } or null)
 export default function ContributionStatus({ issue }) {
+  const { user } = useAuth();
+  if (!user) return null;
   const track = useTrackIssue();
   const update = useUpdateContribution();
   const remove = useRemoveContribution();

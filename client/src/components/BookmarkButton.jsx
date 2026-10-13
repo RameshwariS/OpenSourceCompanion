@@ -1,7 +1,10 @@
 import { useAddBookmark, useRemoveBookmark } from '../hooks/useBookmarks';
+import { useAuth } from '../context/AuthContext';
 
 // `issue` needs: repoFullName, number, bookmarkId (null when not bookmarked)
 export default function BookmarkButton({ issue }) {
+  const { user } = useAuth();
+  if (!user) return null;
   const add = useAddBookmark();
   const remove = useRemoveBookmark();
   const bookmarked = Boolean(issue.bookmarkId);

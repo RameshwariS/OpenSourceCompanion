@@ -26,6 +26,10 @@ export default function App() {
       <Route element={<AppLayout />}>
         <Route index element={<HomePage />} />
 
+        {/* Public: issues visible to everyone */}
+        <Route path="issues" element={<IssuesPage />} />
+        <Route path="issues/:owner/:repo/:number" element={<IssueDetailPage />} />
+
         <Route element={<GuestRoute />}>
           <Route path="login" element={<LoginPage />} />
           <Route path="register" element={<RegisterPage />} />
@@ -33,9 +37,7 @@ export default function App() {
 
         <Route element={<ProtectedRoute />}>
           <Route path="dashboard" element={<DashboardPage />} />
-          <Route path="issues/:owner/:repo/:number" element={<IssueDetailPage />} />
           <Route path="bookmarks" element={<BookmarksPage />} />
-          <Route path="issues" element={<IssuesPage />} />
           <Route path="my-contributions" element={<MyContributionsPage />} />
           <Route path="users/:username" element={<ProfilePage />} />
           <Route path="settings" element={<SettingsPage />} />
