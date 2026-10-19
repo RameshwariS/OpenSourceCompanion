@@ -249,6 +249,7 @@ Open http://localhost:5173. Optional: `npm run seed:projects` in `server/` lists
 | `REDIS_URL` | no | Enables the Redis cache and job locks. Without it, memory is used |
 | `TRUST_PROXY` | no | Number of proxies in front of the API (`1` behind nginx) |
 | `COOKIE_SECURE` | no | Defaults to `true` in production. Set `false` only for plain-http demos |
+| `COOKIE_SAME_SITE` | no | `lax`, `strict`, or `none`; defaults to `lax` locally and `none` in production for split frontend/API hosts. Unsafe API requests must match `CLIENT_URL` |
 | `VITE_API_URL` | for separately hosted client | API origin, e.g. `https://your-server.onrender.com` (no `/api` suffix). Set as a client build environment variable; omit when a same-origin proxy handles `/api` |
 
 For separate Render services, set `VITE_API_URL` on the client service to the server's public origin, and set the server's `CLIENT_URL` to the client's public origin. The client build uses `VITE_API_URL` for both HTTP requests and Socket.IO.

@@ -33,6 +33,7 @@ const envSchema = z.object({
     .string()
     .optional()
     .transform((v) => (v === 'true' ? true : v === 'false' ? false : undefined)),
+  COOKIE_SAME_SITE: z.enum(['lax', 'strict', 'none']).optional(),
 });
 
 const parsed = envSchema.safeParse(process.env);

@@ -11,6 +11,15 @@ const app = express();
 app.set('trust proxy', env.TRUST_PROXY); // so req.ip is the real visitor behind nginx
 app.use(helmet()); // secure HTTP headers
 app.use(cors({ origin: env.CLIENT_URL, credentials: true })); // only our frontend, cookies allowed
+app.use((req, res, next) => {
+  if (['GET', 'HEAD', 'OPTIONS'].includes(req.method)) return next();
+
+  const origin = req.get('origin');
+  if (origin && origin !== new URL(env.CLIENT_URL).origin) {
+    return res.status(403).json({ success: false, message: 'Request origin not allowed' });
+  }
+  next();
+});
 app.use(express.json({ limit: '10kb' })); // reject huge bodies
 app.use(cookieParser());
 
