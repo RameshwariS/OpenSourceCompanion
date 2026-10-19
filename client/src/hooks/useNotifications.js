@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { io } from 'socket.io-client';
+import { API_ORIGIN } from '../api/client';
 import * as api from '../api/notifications';
 import { useToast } from '../context/ToastContext';
 import { getErrorMessage } from '../utils/getErrorMessage';
@@ -40,7 +41,7 @@ export function useNotificationSocket() {
   const toast = useToast();
 
   useEffect(() => {
-    const socket = io({ withCredentials: true });
+    const socket = io(API_ORIGIN, { withCredentials: true });
 
     socket.on('notification', (n) => {
       queryClient.setQueryData(['notifications'], (old) =>
