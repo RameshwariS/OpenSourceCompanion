@@ -24,7 +24,7 @@ const FEATURES = [
     icon: '📊',
     title: 'Visualise Progress',
     description:
-      'Activity heatmaps, language breakdowns, and contribution streaks show how far you've come at a glance.',
+      'Activity heatmaps, language breakdowns, and contribution streaks show how far you have come at a glance.',
   },
   {
     icon: '🤝',
