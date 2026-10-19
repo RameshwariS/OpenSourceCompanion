@@ -19,10 +19,10 @@ afterEach(async () => {
 afterAll(closeTestDB);
 
 describe('GET /api/issues/:owner/:repo/:number', () => {
-  it('requires authentication', async () => {
+  it('allows public issue details', async () => {
     mockGithub();
     const res = await request(app).get('/api/issues/acme/widgets/7');
-    expect(res.status).toBe(401);
+    expect(res.status).toBe(200);
   });
 
   it('returns the issue with body, comments and difficulty', async () => {

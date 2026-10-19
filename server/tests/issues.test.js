@@ -19,9 +19,9 @@ afterEach(async () => {
 afterAll(closeTestDB);
 
 describe('GET /api/issues', () => {
-  it('requires authentication', async () => {
+  it('allows public issue searches', async () => {
     const res = await request(app).get('/api/issues');
-    expect(res.status).toBe(401);
+    expect(res.status).toBe(200);
   });
 
   it('returns issues enriched with repo stars/language and an estimated difficulty', async () => {

@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import rateLimit, { ipKeyGenerator } from 'express-rate-limit';
 import { env } from '../config/env.js';
-import { authenticate } from '../middleware/auth.js';
+import { authenticate, optionalAuthenticate } from '../middleware/auth.js';
 import { validate } from '../middleware/validate.js';
 import { getIssueSchema, listIssuesSchema, recommendedSchema } from '../validators/issues.validators.js';
 import * as controller from '../controllers/issues.controller.js';
@@ -30,9 +30,8 @@ const perIpLimiter = rateLimit({
   message: { success: false, message: 'Too many requests. Please slow down.' },
 });
 
-router.use(authenticate, issuesLimiter);
-router.get('/', validate(listIssuesSchema), controller.listIssues);
-router.get('/recommended', perIpLimiter, validate(recommendedSchema), controller.recommended);
-router.get('/:owner/:repo/:number', validate(getIssueSchema), controller.getIssue);
+router.get('/', optionalAuthenticate, issuesLimiter, validate(listIssuesSchema), controller.listIssues);
+router.get('/recommended', authenticate, issuesLimiter, perIpLimiter, validate(recommendedSchema), controller.recommended);
+router.get('/:owner/:repo/:number', optionalAuthenticate, issuesLimiter, validate(getIssueSchema), controller.getIssue);
 
 export default router;

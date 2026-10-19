@@ -137,7 +137,7 @@ Base URL: `/api`. All responses use one shape:
 
 Status codes: `200/201` success, `400` validation, `401` not logged in, `403` wrong role or suspended, `404` not found, `409` duplicate, `413` body too large, `429` rate limited (ours or GitHub's), `502` GitHub failure.
 
-Every endpoint except `health` and `auth` requires login.
+Issue search and issue details are public. Recommendations and all other user-specific endpoints require login.
 
 | Area | Endpoint | Notes |
 |---|---|---|

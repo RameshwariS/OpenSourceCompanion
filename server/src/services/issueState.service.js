@@ -8,6 +8,9 @@ import Issue from '../models/Issue.js';
  */
 export async function attachUserState(userId, issues) {
   if (issues.length === 0) return issues;
+  if (!userId) {
+    return issues.map((issue) => ({ ...issue, bookmarkId: null, contribution: null }));
+  }
 
   const snapshots = await Issue.find({ githubId: { $in: issues.map((i) => i.githubId) } })
     .select('_id githubId')
