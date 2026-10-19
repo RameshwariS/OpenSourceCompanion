@@ -12,7 +12,13 @@ import OrgFollow from '../../src/models/OrgFollow.js';
 let mongod;
 
 export async function connectTestDB() {
-  mongod = await MongoMemoryServer.create();
+  mongod = await MongoMemoryServer.create({
+    instance: {
+      // CI runners can have less than MongoDB's 500 MB index-build free-space default.
+      // This database is disposable and only contains small test fixtures.
+      args: ['--setParameter', 'indexBuildMinAvailableDiskSpaceMB=0'],
+    },
+  });
   await mongoose.connect(mongod.getUri());
   // Wait for unique indexes: the duplicate tests depend on them
   await Promise.all(

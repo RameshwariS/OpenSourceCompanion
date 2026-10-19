@@ -1,7 +1,7 @@
 import { Router } from 'express';
-import rateLimit from 'express-rate-limit';
+import rateLimit, { ipKeyGenerator } from 'express-rate-limit';
 import { env } from '../config/env.js';
-import { optionalAuthenticate } from '../middleware/auth.js';
+import { authenticate } from '../middleware/auth.js';
 import { validate } from '../middleware/validate.js';
 import { getIssueSchema, listIssuesSchema, recommendedSchema } from '../validators/issues.validators.js';
 import * as controller from '../controllers/issues.controller.js';
@@ -12,7 +12,7 @@ const issuesLimiter = rateLimit({
   windowMs: 60 * 1000,
   limit: 30,
   // Use user ID when logged in, fall back to IP for guests
-  keyGenerator: (req) => req.user ? String(req.user._id) : req.ip,
+  keyGenerator: (req) => req.user ? String(req.user._id) : ipKeyGenerator(req.ip),
   standardHeaders: 'draft-7',
   legacyHeaders: false,
   skip: () => env.NODE_ENV === 'test',
@@ -23,14 +23,14 @@ const issuesLimiter = rateLimit({
 const perIpLimiter = rateLimit({
   windowMs: 60_000,
   limit: 10,
-  keyGenerator: (req) => req.user ? String(req.user._id) : req.ip,
+  keyGenerator: (req) => req.user ? String(req.user._id) : ipKeyGenerator(req.ip),
   standardHeaders: 'draft-7',
   legacyHeaders: false,
   skip: () => env.NODE_ENV === 'test',
   message: { success: false, message: 'Too many requests. Please slow down.' },
 });
 
-router.use(optionalAuthenticate, issuesLimiter);
+router.use(authenticate, issuesLimiter);
 router.get('/', validate(listIssuesSchema), controller.listIssues);
 router.get('/recommended', perIpLimiter, validate(recommendedSchema), controller.recommended);
 router.get('/:owner/:repo/:number', validate(getIssueSchema), controller.getIssue);
