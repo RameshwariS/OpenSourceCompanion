@@ -30,7 +30,7 @@ const OAUTH_STATE_TTL_MS = 10 * 60 * 1000;
 
 const oauthCookieBase = {
   httpOnly: true,
-  secure: env.NODE_ENV === 'production',
+  secure: env.COOKIE_SECURE,
   sameSite: 'lax', // must be lax (not strict) so the cookie survives the redirect back from github.com
   path: '/api/auth/github',
 };

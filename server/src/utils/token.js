@@ -21,7 +21,7 @@ export function verifyAuthToken(token) {
 
 const cookieBase = {
   httpOnly: true, // JavaScript cannot read it, so XSS can't steal it
-  secure: env.NODE_ENV === 'production', // HTTPS only in production
+  secure: env.COOKIE_SECURE, // HTTPS only (defaults to true in production)
   // Render's separate frontend and API origins need a cross-site cookie.
   // Unsafe requests are separately checked against CLIENT_URL in app.js.
   sameSite: env.COOKIE_SAME_SITE ?? (env.NODE_ENV === 'production' ? 'none' : 'lax'),

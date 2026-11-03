@@ -10,3 +10,7 @@ export const api = axios.create({
   baseURL: `${API_ORIGIN || ''}/api`,
   withCredentials: true,
 });
+
+// Full URL for links the browser follows directly (e.g. GitHub OAuth), which
+// bypass axios and so need the API origin added by hand.
+export const apiUrl = (path) => `${API_ORIGIN || ''}${path}`;

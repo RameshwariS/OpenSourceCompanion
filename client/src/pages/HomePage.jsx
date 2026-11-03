@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { apiUrl } from '../api/client';
 
 const FEATURES = [
   {
@@ -80,7 +81,7 @@ export default function HomePage() {
           ) : (
             <>
               <a
-                href="/api/auth/github"
+                href={apiUrl('/api/auth/github')}
                 className="rounded-lg bg-emerald-500 px-6 py-3 text-sm font-semibold text-white shadow-sm hover:bg-emerald-600 transition-colors"
               >
                 Continue with GitHub
@@ -140,7 +141,7 @@ export default function HomePage() {
               Join developers who are shipping their first open-source PRs every day.
             </p>
             <a
-              href="/api/auth/github"
+              href={apiUrl('/api/auth/github')}
               className="rounded-lg bg-white px-6 py-3 text-sm font-semibold text-emerald-600 hover:bg-emerald-50 transition-colors"
             >
               Get started — it's free
