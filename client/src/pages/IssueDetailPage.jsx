@@ -1,4 +1,7 @@
 import { Link, useParams } from 'react-router-dom';
+import { useState } from 'react';
+import { useAuth } from '../context/AuthContext';
+import * as aiApi from '../api/ai';
 import { useIssue } from '../hooks/useIssues';
 import { getErrorMessage } from '../utils/getErrorMessage';
 import { formatNumber, timeAgo } from '../utils/format';
@@ -10,6 +13,13 @@ import { Skeleton } from '../components/Skeleton';
 
 export default function IssueDetailPage() {
   const { owner, repo, number } = useParams();
+  const { user } = useAuth();
+  const [summary, setSummary] = useState('');
+  const [summaryBusy, setSummaryBusy] = useState(false);
+  const [aiError, setAiError] = useState('');
+  const [question, setQuestion] = useState('');
+  const [conversationId, setConversationId] = useState('');
+  const [chatMessages, setChatMessages] = useState([]);
   const { data, isLoading, isError, error } = useIssue(owner, repo, number);
 
   if (isLoading) {
@@ -34,6 +44,21 @@ export default function IssueDetailPage() {
   }
 
   const { issue, comments, stale } = data;
+
+  async function runSummary() {
+    if (!user) { setAiError('Sign in and add an AI key in Settings to use this feature.'); return; }
+    setSummaryBusy(true); setAiError('');
+    try { setSummary((await aiApi.summarizeIssue({ owner, repo, number })).summary); }
+    catch (err) { if (err.response?.data?.code === 'AI_KEY_MISSING') setAiError('Add an AI key in Settings to summarize issues.'); else setAiError(err.response?.data?.message || 'Summary request failed.'); }
+    finally { setSummaryBusy(false); }
+  }
+  async function askQuestion(e) {
+    e.preventDefault();
+    if (!user) { setAiError('Sign in and add an AI key in Settings to use chat.'); return; }
+    setAiError('');
+    try { const result = await aiApi.askAI({ repoFullName: `${owner}/${repo}`, issueNumber: Number(number), question, ...(conversationId && { conversationId }) }); setConversationId(result.conversationId); setChatMessages(result.messages); setQuestion(''); }
+    catch (err) { setAiError(err.response?.data?.code === 'AI_KEY_MISSING' ? 'Add an AI key in Settings to use chat.' : err.response?.data?.message || 'Chat request failed.'); }
+  }
 
   return (
     <article className="mx-auto max-w-3xl">
@@ -94,7 +119,17 @@ export default function IssueDetailPage() {
         </a>
         <BookmarkButton issue={issue} />
         <ContributionStatus issue={issue} />
+        <button onClick={runSummary} disabled={summaryBusy} className="rounded-md bg-emerald-600 px-3 py-1 text-xs font-medium text-white disabled:opacity-60">{summaryBusy ? 'Summarizing…' : 'Summarize with AI'}</button>
       </div>
+
+      {aiError && <p role="alert" className="mt-3 text-sm text-amber-700 dark:text-amber-300">{aiError} {aiError.includes('Settings') && <Link to={user ? '/settings' : '/login'} className="underline">{user ? 'Open Settings' : 'Sign in'}</Link>}</p>}
+      {summary && <section className="mt-4 rounded-lg border border-emerald-300 bg-emerald-50 p-4 text-sm dark:bg-emerald-950"><h2 className="font-semibold">AI issue summary</h2><div className="mt-2 whitespace-pre-wrap">{summary}</div></section>}
+
+      <section className="mt-8 rounded-lg border border-slate-200 p-4 dark:border-slate-800">
+        <h2 className="font-semibold">Ask about this repository or issue</h2>
+        {chatMessages.length > 0 && <ol className="mt-3 max-h-96 space-y-3 overflow-y-auto">{chatMessages.map((message, index) => <li key={`${index}-${message.role}`} className="whitespace-pre-wrap rounded-md bg-slate-50 p-3 text-sm dark:bg-slate-900"><strong>{message.role === 'user' ? 'You' : 'AI'}:</strong> {message.content}</li>)}</ol>}
+        <form className="mt-3 flex gap-2" onSubmit={askQuestion}><input aria-label="Question" value={question} onChange={(e) => setQuestion(e.target.value)} maxLength={3000} placeholder="How do I set this repo up?" className="min-w-0 flex-1 rounded-md border border-slate-300 bg-transparent px-3 py-2 text-sm dark:border-slate-700" required /><button className="rounded-md border px-3 py-2 text-sm">Ask</button></form>
+      </section>
 
       <h2 className="mt-8 text-lg font-semibold">Description</h2>
       {/* Plain text on purpose: React escapes it, so issue content can never inject HTML/JS */}

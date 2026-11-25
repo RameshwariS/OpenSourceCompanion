@@ -10,6 +10,7 @@ import projectsRoutes from './projects.routes.js';
 import dashboardRoutes from './dashboard.routes.js';
 import notificationsRoutes from './notifications.routes.js';
 import orgsRoutes from './orgs.routes.js';
+import aiRoutes from './ai.routes.js';
 
 const router = Router();
 
@@ -24,5 +25,6 @@ router.use('/projects', projectsRoutes);
 router.use('/dashboard', dashboardRoutes);
 router.use('/notifications', notificationsRoutes);
 router.use('/orgs', orgsRoutes);
+router.use('/ai', aiRoutes);
 
 export default router;

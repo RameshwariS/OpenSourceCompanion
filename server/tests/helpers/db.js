@@ -8,6 +8,8 @@ import Project from '../../src/models/Project.js';
 import ProjectFollow from '../../src/models/ProjectFollow.js';
 import Notification from '../../src/models/Notification.js';
 import OrgFollow from '../../src/models/OrgFollow.js';
+import IssueSummary from '../../src/models/IssueSummary.js';
+import AIConversation from '../../src/models/AIConversation.js';
 
 let mongod;
 
@@ -22,7 +24,7 @@ export async function connectTestDB() {
   await mongoose.connect(mongod.getUri());
   // Wait for unique indexes: the duplicate tests depend on them
   await Promise.all(
-    [User, Issue, Bookmark, Contribution, Project, ProjectFollow, Notification, OrgFollow].map((m) => m.init()),
+    [User, Issue, Bookmark, Contribution, Project, ProjectFollow, Notification, OrgFollow, IssueSummary, AIConversation].map((m) => m.init()),
   );
 }
 

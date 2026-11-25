@@ -30,6 +30,12 @@ const userSchema = new Schema(
       // AES-256-GCM encrypted OAuth token. Hidden by default.
       accessTokenEnc: { type: String, select: false },
     },
+    llm: {
+      provider: { type: String, enum: ['openai', 'gemini', 'anthropic'] },
+      model: { type: String, maxlength: 120 },
+      apiKeyEnc: { type: String, select: false },
+      keyLastFour: { type: String, maxlength: 4 },
+    },
   },
   { timestamps: true },
 );
